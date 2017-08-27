@@ -1,0 +1,49 @@
+<html>
+  <head>
+    <style>
+      body{
+        background:#ababab;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>8channel</h1>
+    <%# 投稿した内容がここに %>
+    <div>
+      <% if(posts) { %>
+        <% posts.forEach(function(val){ %>
+          <h2>
+            <%= val.id+"."+val.name+" ["+val.date+"]" %>
+          </h2>
+          <% if(val.src){ %>
+            <img src="<%- val.src %>"/>
+          <% } %>
+          <p>
+            <%= val.text %>
+          </p>
+        <% }) %>
+      <% } %>
+    </div>
+    <%# 新しく追加した投稿用のフォーム %>
+    <form action="/post" method="post" id="post" enctype="multipart/form-data">
+      <input type="text" name="name" placeholder="名前を入力"/><br>
+      <input type="file" name="image" accept="image/*"/><br>
+      <textarea name="text"></textarea><br>
+      <input type="submit" value="送信"/>
+    </form>
+    <form action="" id="socket">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.js"   integrity="sha256-5i/mQ300M779N2OVDrl16lbohwXNUdzL/R2aVUXyXWA="   crossorigin="anonymous"></script>
+    <script>
+      const socket = io();
+      $('form#socket').submit(() => {
+        socket.emit('chat message', $('#m').val());
+        $('#m').val('');
+        return false;
+      });
+    </script>
+  </body>
+</html>
